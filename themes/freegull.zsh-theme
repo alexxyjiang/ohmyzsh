@@ -43,9 +43,9 @@ local reset="%{$reset_color%}"
 # color_array=($green $red $cyan $yellow $blue $magenta $white)
 
 local username_normal_color=$yellow
-local hostname_normal_color=$green
+local hostname_normal_color=$cyan
 local username_root_color=$red
-local hostname_root_color=$red
+local hostname_root_color=$blue
 
 # calculating hostname color with hostname characters
 # for i in `hostname`; local hostname_normal_color=$color_array[$[((#i))%7+1]]
