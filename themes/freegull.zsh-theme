@@ -57,7 +57,7 @@ local username_command="%n"
 local hostname_command="%m"
 local current_dir="%~"
 
-local time_output="$white($magenta%D{%a %b %d, %H:%M}$white)$reset"
+local time_output="$white($green%D{%a %b %d}, $magenta%D{%H:%M:%S}$white)$reset"
 local username_output="%(!..$username_normal_color$username_command$reset@)"
 local hostname_output="$hostname_color$hostname_command$reset"
 local current_dir_output="$current_dir_color$current_dir$reset"
