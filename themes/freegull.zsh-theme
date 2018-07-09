@@ -77,9 +77,9 @@ ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$green>"
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$red<"
 ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$red<>"
 
-PROMPT='$white+= $time_output $username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg].)'
+PROMPT='$white/~ $time_output $username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg].)'
 GIT_PROMPT='$(out=$(git_prompt_info)$(git_prompt_status)$(git_remote_status);if [[ -n $out ]]; then printf %s " $white= $out$reset";fi)'
 PROMPT+="$GIT_PROMPT"
 PROMPT+="
-$white+= $last_command_output%#$reset "
+$white\~ $last_command_output%#$reset "
 RPROMPT=""
