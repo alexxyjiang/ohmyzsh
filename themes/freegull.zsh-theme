@@ -1,4 +1,4 @@
-# Michele Bologna's theme
+# Michele Bologna's theme, modified by Alex Jiang
 # http://michelebologna.net
 #
 # This a theme for oh-my-zsh. Features a colored prompt with:
@@ -68,7 +68,7 @@ ZSH_THEME_GIT_PROMPT_PREFIX="{"
 ZSH_THEME_GIT_PROMPT_SUFFIX="}"
 ZSH_THEME_GIT_PROMPT_DIRTY=""
 ZSH_THEME_GIT_PROMPT_CLEAN=""
-ZSH_THEME_GIT_PROMPT_UNTRACKED="$blue%%"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="$blue?"
 ZSH_THEME_GIT_PROMPT_MODIFIED="$red*"
 ZSH_THEME_GIT_PROMPT_ADDED="$green+"
 ZSH_THEME_GIT_PROMPT_STASHED="$blue$$"
