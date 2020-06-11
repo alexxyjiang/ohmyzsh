@@ -57,11 +57,11 @@ local username_command="%n"
 local hostname_command="%m"
 local current_dir="%~"
 
-local time_output="$magenta%D{%a %b %d} $green%D{%H:%M}$reset"
+local time_output="$red%D{%a %b %d} $green%D{%H:%M}$reset"
 local username_output="%(!..$username_normal_color$username_command$reset@)"
 local hostname_output="$hostname_color$hostname_command$reset"
 local current_dir_output="$current_dir_color$current_dir$reset"
-local jobs_bg="${red}fg: %j$reset"
+local jobs_bg="${magenta}fg: %j$reset"
 local last_command_output="%(?.%(!.$red.$green).$yellow)"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="{"
