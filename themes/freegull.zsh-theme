@@ -2,9 +2,7 @@
 # http://michelebologna.net
 #
 # This a theme for oh-my-zsh. Features a colored prompt with:
-# * username@host: [jobs] [git] workdir %
-# * hostname color is based on hostname characters. When using as root, the
-# prompt shows only the hostname in red color.
+# {date} {time} {username}@{host}:{workdir} [jobs] [git]
 # * [jobs], if applicable, counts the number of suspended jobs tty
 # * [git], if applicable, represents the status of your git repo (more on that
 # later)
@@ -42,10 +40,10 @@ local reset="%{$reset_color%}"
 # local -a color_array
 # color_array=($green $red $cyan $yellow $blue $magenta $white)
 
-local username_normal_color=$yellow
+local username_normal_color=$magenta
 local hostname_normal_color=$cyan
 local username_root_color=$red
-local hostname_root_color=$blue
+local hostname_root_color=$green
 
 # calculating hostname color with hostname characters
 # for i in `hostname`; local hostname_normal_color=$color_array[$[((#i))%7+1]]
@@ -57,7 +55,7 @@ local username_command="%n"
 local hostname_command="%m"
 local current_dir="%~"
 
-local time_output="$magenta%D{%a %b %d} $green%D{%H:%M:%S}$reset"
+local time_output="$yellow%D{%a %b %d} $green%D{%H:%M:%S}$reset"
 local username_output="%(!..$username_normal_color$username_command$reset@)"
 local hostname_output="$hostname_color$hostname_command$reset"
 local current_dir_output="$current_dir_color$current_dir$reset"
