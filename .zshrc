@@ -70,7 +70,7 @@ ZSH_THEME="freegull"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(command-time copyfile dirhistory thefuck you-should-use zsh-autosuggestions zsh-syntax-highlighting git mvn sbt)
+plugins=(command-time copyfile dirhistory git mvn sbt thefuck you-should-use zsh-autosuggestions zsh-syntax-highlighting)
 
 source ${ZSH}/oh-my-zsh.sh
 
@@ -100,4 +100,5 @@ source ${ZSH}/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+[ -f ~/.zshrc_custom ] && source ~/.zshrc_custom
 [ -f ~/.profile ] && source ~/.profile

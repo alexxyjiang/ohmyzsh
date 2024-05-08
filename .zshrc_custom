@@ -1,0 +1,6 @@
+ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets regexp)
+ZSH_HIGHLIGHT_REGEXP+=('^docker rmi .*' fg=magenta,underline)
+ZSH_HIGHLIGHT_REGEXP+=('^git rm .*' fg=magenta,underline)
+ZSH_HIGHLIGHT_REGEXP+=('^grm .*' fg=magenta,underline)
+ZSH_HIGHLIGHT_REGEXP+=('^grmc .*' fg=magenta,underline)
+ZSH_HIGHLIGHT_REGEXP+=('^rm .*' fg=magenta,underline)
