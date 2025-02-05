@@ -37,29 +37,25 @@ local magenta_bg="%{$bg_bold[magenta]%}"
 local white_bg="%{$bg_bold[white]%}"
 local reset="%{$reset_color%}"
 
-# local -a color_array
-# color_array=($green $red $cyan $yellow $blue $magenta $white)
-
-local username_normal_color=$magenta
-local hostname_normal_color=$cyan
-local username_root_color=$red
-local hostname_root_color=$green
-
-# calculating hostname color with hostname characters
-# for i in `hostname`; local hostname_normal_color=$color_array[$[((#i))%7+1]]
-local -a hostname_color
-hostname_color=%(!.$hostname_root_color.$hostname_normal_color)
-
-local current_dir_color=$blue
+# omit user name when is root
+local username_color=$cyan
 local username_command="%n"
-local hostname_command="%m"
-local current_dir="%~"
+local username_output="%(!..$username_color$username_command$reset@)"
 
-local time_output="$green%D{%a %b %d} $white%D{%H:%M:%S}$reset"
-local username_output="%(!..$username_normal_color$username_command$reset@)"
+# hostname color array, green for root, pick a color based on the first character of hostname for normal user
+local hostname_root_color=$green
+local hostname_normal_color_array=($magenta $yellow $cyan)
+local hostname_normal_color=$hostname_normal_color_array[$[((#HOST))%3+1]]
+local hostname_color="%(!.$hostname_root_color.$hostname_normal_color)"
+local hostname_command="%m"
 local hostname_output="$hostname_color$hostname_command$reset"
-local current_dir_output="$current_dir_color$current_dir$reset"
-local jobs_bg="${red}fg: %j$reset"
+
+# other part which is static even is root
+local time_output="$white%D{%a %b %d} - %D{%H:%M:%S}$reset"
+local current_dir_color=$blue
+local current_dir_command="%~"
+local current_dir_output="$current_dir_color$current_dir_command$reset"
+local jobs_bg_output="${red}fg: %j$reset"
 local last_command_output="%(?.%(!.$red.$green).$yellow)"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="$white{"
@@ -75,7 +71,7 @@ ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$green>"
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$magenta<"
 ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$magenta<>"
 
-PROMPT='$time_output $username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg].)'
+PROMPT='$time_output $username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg_output].)'
 GIT_PROMPT='$(out=$(git_prompt_info)$(git_prompt_status)$(git_remote_status);if [[ -n $out ]]; then printf %s " $white=$out$reset";fi)'
 PROMPT+="$GIT_PROMPT"
 PROMPT+="
