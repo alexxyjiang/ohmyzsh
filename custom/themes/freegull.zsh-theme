@@ -21,19 +21,19 @@
 # * '=' if local repo is equal to remote repo (in sync)
 # * '<>' if local repo is diverged
 
-local green="%F{010}"
-local red="%F{009}"
-local cyan="%F{014}"
-local yellow="%F{011}"
-local blue="%F{012}"
-local magenta="%F{013}"
-local white="%F{015}"
-local green_bg="%{$bg_bold[green]%}"
+local red="%{$fg_bold[red]%}"
 local red_bg="%{$bg_bold[red]%}"
-local cyan_bg="%{$bg_bold[cyan]%}"
-local yellow_bg="%{$bg_bold[yellow]%}"
+local green="%{$fg_bold[green]%}"
+local green_bg="%{$bg_bold[green]%}"
+local blue="%{$fg_bold[blue]%}"
 local blue_bg="%{$bg_bold[blue]%}"
+local yellow="%{$fg_bold[yellow]%}"
+local yellow_bg="%{$bg_bold[yellow]%}"
+local cyan="%{$fg_bold[cyan]%}"
+local cyan_bg="%{$bg_bold[cyan]%}"
+local magenta="%{$fg_bold[magenta]%}"
 local magenta_bg="%{$bg_bold[magenta]%}"
+local white="%{$fg_bold[white]%}"
 local white_bg="%{$bg_bold[white]%}"
 local reset="%{$reset_color%}"
 local color_array=(${yellow} ${cyan} ${magenta})
@@ -44,7 +44,7 @@ local username_command="%n"
 local username_output="%(!..$username_color$username_command$reset@)"
 
 # time and hostname for normal user changes color based on first letter of hostname
-local time_color=$color_array[$[((#HOST)+1)%3+1]]
+local time_color=$color_array[$[((#HOST))%3+1]]
 local time_output="${time_color}%D{%a %b %d} - %D{%H:%M:%S}$reset"
 local hostname_root_color=${red}
 local hostname_normal_color=$color_array[$[((#HOST))%3+1]]
@@ -56,7 +56,7 @@ local hostname_output="$hostname_color$hostname_command$reset"
 local current_dir_color=${blue}
 local current_dir_command="%~"
 local current_dir_output="$current_dir_color$current_dir_command$reset"
-local jobs_bg_output="${yellow}fg: %j$reset"
+local jobs_bg_output="${yellow}bg: %j$reset"
 local last_command_output="%(?.%(!.${yellow}.${green}).${red})"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="$white{"
