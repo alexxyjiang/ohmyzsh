@@ -44,7 +44,7 @@ local username_command="%n"
 local username_output="%(!..$username_color$username_command$reset@)"
 
 # time and hostname for normal user changes color based on first letter of hostname
-local time_color=$color_array[$[((#HOST))%3+1]]
+local time_color=$white
 local time_output="${time_color}%D{%a %b %d} - %D{%H:%M:%S}$reset"
 local hostname_root_color=${red}
 local hostname_normal_color=$color_array[$[((#HOST))%3+1]]
@@ -68,8 +68,8 @@ ZSH_THEME_GIT_PROMPT_MODIFIED="$red*"
 ZSH_THEME_GIT_PROMPT_ADDED="$yellow+"
 ZSH_THEME_GIT_PROMPT_STASHED="$blue$$"
 ZSH_THEME_GIT_PROMPT_EQUAL_REMOTE="$green="
-ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$green>"
-ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$magenta<"
+ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$cyan>"
+ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$cyan<"
 ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$magenta<>"
 
 PROMPT='$time_output $username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg_output].)'
