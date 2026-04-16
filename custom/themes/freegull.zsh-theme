@@ -35,28 +35,29 @@ local magenta="%{$fg_bold[magenta]%}"
 local magenta_bg="%{$bg_bold[magenta]%}"
 local white="%{$fg_bold[white]%}"
 local white_bg="%{$bg_bold[white]%}"
+local gray="%{$fg_bold[black]%}"
 local reset="%{$reset_color%}"
 local color_array=(${yellow} ${cyan} ${magenta})
 
 # omit user name when is root
 local username_color=${green}
 local username_command="%n"
-local username_output="%(!..$username_color$username_command$reset@)"
+local username_output="%(!..${username_color}${username_command}${reset}@)"
 
 # time and hostname for normal user changes color based on first letter of hostname
-local time_color=$white
-local time_output="${time_color}%D{%a %b %d} - %D{%H:%M:%S}$reset"
+local time_color=${gray}${white_bg}
+local time_output="${time_color}%D{%a %b %d} - %D{%H:%M:%S}${reset}"
 local hostname_root_color=${red}
-local hostname_normal_color=$color_array[$[((#HOST))%3+1]]
-local hostname_color="%(!.$hostname_root_color.$hostname_normal_color)"
+local hostname_normal_color=${color_array[$[((#HOST))%3+1]]}
+local hostname_color="%(!.${hostname_root_color}.${hostname_normal_color})"
 local hostname_command="%m"
-local hostname_output="$hostname_color$hostname_command$reset"
+local hostname_output="${hostname_color}${hostname_command}${reset}"
 
 # other part which is static even is root
 local current_dir_color=${blue}
 local current_dir_command="%~"
-local current_dir_output="$current_dir_color$current_dir_command$reset"
-local jobs_bg_output="${yellow}bg: %j$reset"
+local current_dir_output="${current_dir_color}${current_dir_command}${reset}"
+local jobs_bg_output="${gray}${yellow_bg} bg: %j ${reset}"
 local last_command_output="%(?.%(!.${yellow}.${green}).${red})"
 
 ZSH_THEME_GIT_PROMPT_PREFIX="$white{"
