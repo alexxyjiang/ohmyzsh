@@ -39,9 +39,14 @@ local gray="%{$fg_bold[black]%}"
 local reset="%{$reset_color%}"
 local color_array=(${yellow} ${cyan} ${magenta})
 
+# omz version
+local omz_version=$(git -C "${ZSH}" rev-parse --short HEAD 2>/dev/null || echo "?")
+local omz_version_color=${yellow}${blue_bg}
+local omz_version_output="${omz_version_color} omz:${omz_version} ${reset}"
+
 # omit user name when is root
 local username_color=${gray}${green_bg}
-local username_command=" %n "
+local username_command="%n"
 local username_output="%(!..${username_color}${username_command}${reset}@)"
 
 # time and hostname for normal user changes color based on first letter of hostname
@@ -73,9 +78,8 @@ ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$cyan>"
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$cyan<"
 ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$magenta<>"
 
-PROMPT='$time_output$username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg_output].)'
+PROMPT='$omz_version_output$time_output$username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg_output].)'
 GIT_PROMPT='$(out=$(git_prompt_info)$(git_prompt_status)$(git_remote_status);if [[ -n $out ]]; then printf %s "$out$reset";fi)'
 PROMPT+="$GIT_PROMPT"
 PROMPT+="
 $last_command_output$ $reset"
-RPROMPT=""
