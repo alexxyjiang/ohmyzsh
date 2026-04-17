@@ -40,13 +40,13 @@ local reset="%{$reset_color%}"
 local color_array=(${yellow} ${cyan} ${magenta})
 
 # omit user name when is root
-local username_color=${green}
-local username_command="%n"
+local username_color=${gray}${green_bg}
+local username_command=" %n "
 local username_output="%(!..${username_color}${username_command}${reset}@)"
 
 # time and hostname for normal user changes color based on first letter of hostname
 local time_color=${gray}${white_bg}
-local time_output="${time_color}%D{%a %b %d} - %D{%H:%M:%S}${reset}"
+local time_output="${time_color} %D{%a %b %d} - %D{%H:%M:%S} ${reset}"
 local hostname_root_color=${red}
 local hostname_normal_color=${color_array[$[((#HOST))%3+1]]}
 local hostname_color="%(!.${hostname_root_color}.${hostname_normal_color})"
@@ -73,7 +73,7 @@ ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="$cyan>"
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="$cyan<"
 ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="$magenta<>"
 
-PROMPT='$time_output $username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg_output].)'
+PROMPT='$time_output$username_output$hostname_output:$current_dir_output%1(j. [$jobs_bg_output].)'
 GIT_PROMPT='$(out=$(git_prompt_info)$(git_prompt_status)$(git_remote_status);if [[ -n $out ]]; then printf %s "$out$reset";fi)'
 PROMPT+="$GIT_PROMPT"
 PROMPT+="
