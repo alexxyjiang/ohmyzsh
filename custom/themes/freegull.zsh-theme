@@ -1,12 +1,14 @@
 # Michele Bologna's theme, modified by Alex Jiang
 # http://michelebologna.net
 #
-# This a theme for oh-my-zsh. Features a colored prompt with:
-# {date} {time} {username}@{host}:{workdir} [jobs] [git]
-# * [jobs], if applicable, counts the number of suspended jobs tty
-# * [git], if applicable, represents the status of your git repo (more on that
-# later)
-# * '%' prompt will be green if last command return value is 0, yellow otherwise.
+# This is an oh-my-zsh theme with a two-line colored prompt:
+# {omz version} {date} - {time} {username}@{host}:{workdir} [jobs] [git]
+# {prompt char}
+# * hostname and username use softer non-bold colors from the standard 16-color set
+# * hostname badges are limited to yellow, cyan, and magenta accents
+# * [jobs], if applicable, shows the number of suspended background jobs
+# * [git], if applicable, shows git branch and repo status details
+# * the prompt char is green on success, yellow for root on success, red on failure
 #
 # git prompt is inspired by official git contrib prompt:
 # https://github.com/git/git/tree/master/contrib/completion/git-prompt.sh
@@ -36,16 +38,32 @@ local magenta_bg="%{$bg_bold[magenta]%}"
 local white="%{$fg_bold[white]%}"
 local white_bg="%{$bg_bold[white]%}"
 local gray="%{$fg_bold[black]%}"
+local red_plain="%{$fg[red]%}"
+local red_bg_plain="%{$bg[red]%}"
+local green_plain="%{$fg[green]%}"
+local green_bg_plain="%{$bg[green]%}"
+local blue_plain="%{$fg[blue]%}"
+local blue_bg_plain="%{$bg[blue]%}"
+local yellow_plain="%{$fg[yellow]%}"
+local yellow_bg_plain="%{$bg[yellow]%}"
+local cyan_plain="%{$fg[cyan]%}"
+local cyan_bg_plain="%{$bg[cyan]%}"
+local magenta_plain="%{$fg[magenta]%}"
+local magenta_bg_plain="%{$bg[magenta]%}"
+local white_plain="%{$fg[white]%}"
+local white_bg_plain="%{$bg[white]%}"
+local gray_plain="%{$fg[black]%}"
 local reset="%{$reset_color%}"
-local color_array=(${yellow} ${cyan} ${magenta})
+# Softer hostname badges using the standard 16-color table, limited to yellow/cyan/magenta.
+local color_array=(${gray_plain}${yellow_bg_plain} ${gray_plain}${cyan_bg_plain} ${white_plain}${magenta_bg_plain})
 
 # omz version
 local omz_version=$(git -C "${ZSH}" rev-parse --short HEAD 2>/dev/null || echo "?")
-local omz_version_color=${yellow}${blue_bg}
+local omz_version_color=${white}${blue_bg}
 local omz_version_output="${omz_version_color} omz:${omz_version} ${reset}"
 
 # omit user name when is root
-local username_color=${gray}${green_bg}
+local username_color=${gray_plain}${green_bg_plain}
 local username_command="%n"
 local username_output="%(!..${username_color}${username_command}${reset}@)"
 
