@@ -59,7 +59,7 @@ local color_array=(${gray_plain}${yellow_bg_plain} ${gray_plain}${cyan_bg_plain}
 
 # omz version
 local omz_version=$(git -C "${ZSH}" rev-parse --short HEAD 2>/dev/null || echo "?")
-local omz_version_color=${white}${blue_bg}
+local omz_version_color=${gray}${blue_bg}
 local omz_version_output="${omz_version_color} omz:${omz_version} ${reset}"
 
 # omit user name when is root
