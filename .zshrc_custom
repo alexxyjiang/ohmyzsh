@@ -1,4 +1,7 @@
-ZSH_COMMAND_TIME_EXCLUDE=(ex rview rvim vi view vim vimdiff)
+ZSH_COMMAND_TIME_EXCLUDE=(ex rview rvim vi view vim vimdiff man)
+
+# Keep shell/plugin colors within the terminal's ANSI 16-color palette.
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=black,bold'
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets regexp)
 ZSH_HIGHLIGHT_REGEXP+=('^docker rmi .*' fg=magenta,underline)
