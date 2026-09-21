@@ -24,3 +24,9 @@ if [ -z "${SSH_AUTH_SOCK}" ] && [ -t 0 ] && command -v ssh-agent >/dev/null 2>&1
     fi
     unset SSH_ENV
 fi
+
+# rg with color
+alias rg="rg --smart-case --colors \"line:style:bold\" --colors \"line:fg:red\" --colors \"match:bg:blue\" --colors \"match:fg:white\" --colors \"path:style:underline\" --colors \"path:fg:green\""
+
+# yazi
+alias yz="yazi"
