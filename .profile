@@ -25,6 +25,16 @@ if [ -z "${SSH_AUTH_SOCK}" ] && [ -t 0 ] && command -v ssh-agent >/dev/null 2>&1
     unset SSH_ENV
 fi
 
+# colors
+export LSCOLORS="ExfxbxdxCxaeafhehfhchd"
+# oh-my-zsh's theme-and-appearance.zsh (interactive zsh only) unconditionally
+# re-exports LSCOLORS with its own default after this loads. Stash the value
+# here (not exported, so it doesn't leak into child processes) so
+# ~/.zshrc_custom can restore it once oh-my-zsh has set up its ls alias.
+LSCOLORS_CUSTOM="$LSCOLORS"
+export JQ_COLORS="4;31:0;33:0;33:0;35:0;32:1;37:1;36:1;34"
+export GREP_COLORS='mt=1;44;30'
+
 # rg with color
 alias rg="rg --smart-case --colors \"line:style:bold\" --colors \"line:fg:red\" --colors \"match:bg:blue\" --colors \"match:fg:white\" --colors \"path:style:underline\" --colors \"path:fg:green\""
 

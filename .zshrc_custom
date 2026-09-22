@@ -1,5 +1,12 @@
 ZSH_COMMAND_TIME_EXCLUDE=(ex rview rvim vi view vim vimdiff man)
 
+# oh-my-zsh's theme-and-appearance.zsh (sourced before this file, as part of
+# oh-my-zsh.sh) unconditionally overwrites LSCOLORS with its own default.
+# Restore the value ~/.profile stashed in LSCOLORS_CUSTOM, after oh-my-zsh has
+# already set up its `ls -G`/`--color=tty` alias — single source of truth
+# stays in ~/.profile, nothing hardcoded here.
+[ -n "${LSCOLORS_CUSTOM:-}" ] && export LSCOLORS="$LSCOLORS_CUSTOM"
+
 # Keep shell/plugin colors within the terminal's ANSI 16-color palette.
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=black,bold'
 
