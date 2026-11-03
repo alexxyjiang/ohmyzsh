@@ -1,0 +1,243 @@
+# Locale
+export LC_ALL="en_US.UTF-8"
+# Editor
+export EDITOR="vim"
+# Setting Python Requests Extra CA Path
+export REQUESTS_CA_BUNDLE="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting CURL Extra CA Path
+export CURL_CA_BUNDLE="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting gRPC Extra CA Path
+export GRPC_DEFAULT_SSL_ROOTS_FILE_PATH="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting OpenSSL Extra CA Path
+export SSL_CERT_FILE="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting NodeJS Extra CA Path
+export NODE_EXTRA_CA_CERTS="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting Git SSL CA Info
+export GIT_SSL_CAINFO="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting AWS CA Bundle
+export AWS_CA_BUNDLE="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting Cargo CA Info
+export CARGO_HTTP_CAINFO="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting Conan C/C++ package manager CA Cert Path
+export CONAN_CACERT_PATH="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting Haskell Stack Certificate Path
+export SYSTEM_CERTIFICATE_PATH="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting Elixir Hex CA Certs Path
+export HEX_CACERTS_PATH="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+# Setting Grype Anchore vulnerability scanner CA Cert
+export GRYPE_DB_CA_CERT="/Library/Application Support/Netskope/STAgent/download/nscacert_combined.pem"
+
+# XDG Base Directory
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_STATE_HOME="${HOME}/.local/state"
+export XDG_CACHE_HOME="${HOME}/.cache"
+
+# ssh-agent: reuse one agent across shells instead of spawning duplicates.
+# macOS already runs one via launchd (com.openssh.ssh-agent), so SSH_AUTH_SOCK
+# is normally pre-set there; this mainly kicks in on Linux, and only in
+# interactive shells (the `-t 0` check skips it for scripts/cron).
+if [ -z "${SSH_AUTH_SOCK}" ] && [ -t 0 ] && command -v ssh-agent >/dev/null 2>&1; then
+    SSH_ENV="${HOME}/.ssh/agent.env"
+    [ -f "${SSH_ENV}" ] && source "${SSH_ENV}" >/dev/null
+    if [ -z "${SSH_AGENT_PID}" ] || ! kill -0 "${SSH_AGENT_PID}" 2>/dev/null; then
+        mkdir -p -m 700 "${HOME}/.ssh"
+        (umask 077; ssh-agent -s > "${SSH_ENV}")
+        source "${SSH_ENV}" >/dev/null
+        ssh-add
+    fi
+    unset SSH_ENV
+fi
+
+# init homebrew (shellenv output differs per shell, e.g. zsh's fpath array syntax)
+if [ -n "${ZSH_VERSION-}" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+elif [ -n "${BASH_VERSION-}" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv bash)"
+else
+    eval "$(/opt/homebrew/bin/brew shellenv sh)"
+fi
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+# Cache shell-specific jenv init output, but keep JAVA_HOME hooks live.
+_profile_jenv_init() {
+    local shell cache_file now mtime age key saved_key script line ref valid tmp_file
+    local binary root dep metadata
+    if [ -n "${ZSH_VERSION-}" ]; then
+        setopt localoptions nonomatch
+        shell=zsh
+        binary=$(whence -p jenv)
+    else
+        shell=bash
+        binary=$(type -P jenv)
+    fi
+    root="${JENV_ROOT:-$HOME/.jenv}"
+    cache_file="${XDG_CACHE_HOME}/jenv-init-${shell}"
+    now=$(date +%s)
+    # Track executable/plugin identity as well as modification time. Symlink
+    # targets change on Homebrew upgrades even if timestamps are preserved.
+    key="$root|$binary|${JENV_HOOK_PATH-}"
+    for dep in "$binary" "$root/plugins" "$root"/plugins/*; do
+        [ -e "$dep" ] || continue
+        metadata=$(stat -L -f "%d:%i:%m:%z" "$dep" 2>/dev/null) ||
+            metadata=$(stat -L -c "%d:%i:%Y:%s" "$dep" 2>/dev/null) || metadata=unknown
+        key="$key|$dep:$metadata"
+    done
+    valid=false
+    if [ -r "$cache_file" ]; then
+        IFS= read -r saved_key < "$cache_file"
+        mtime=$(stat -f %m "$cache_file" 2>/dev/null) ||
+            mtime=$(stat -c %Y "$cache_file" 2>/dev/null) || mtime=0
+        age=$((now - mtime))
+        if [ "$saved_key" = "# cache-key: $key" ] &&
+            [ "$age" -ge 0 ] && [ "$age" -lt 43200 ]; then
+            valid=true
+            while IFS= read -r line; do
+                case "$line" in
+                    source\ *)
+                        # jenv emits source paths enclosed in single/double quotes.
+                        ref=${line#source }
+                        ref=${ref#?}; ref=${ref%?}
+                        if [ ! -r "$ref" ] || [ "$ref" -nt "$cache_file" ]; then
+                            valid=false
+                            break
+                        fi
+                        ;;
+                esac
+            done < "$cache_file"
+        fi
+    fi
+    if [ "$valid" = true ]; then
+        . "$cache_file"
+        return
+    fi
+    # Refresh links before generating the script; never cache this command.
+    if command jenv refresh-plugins &&
+        script=$(command jenv init - --no-rehash "$shell"); then
+        tmp_file=""
+        if mkdir -p "$XDG_CACHE_HOME" 2>/dev/null; then
+            tmp_file=$(mktemp "${cache_file}.XXXXXX" 2>/dev/null) || tmp_file=""
+        fi
+        if [ -n "$tmp_file" ]; then
+            if {
+                printf "# cache-key: %s\n" "$key"
+                while IFS= read -r line; do
+                    [ "$line" = "jenv refresh-plugins" ] || printf "%s\n" "$line"
+                done <<EOF
+$script
+EOF
+            } > "$tmp_file" && mv -f "$tmp_file" "$cache_file" 2>/dev/null; then
+                . "$cache_file"
+                return
+            fi
+            rm -f "$tmp_file"
+        fi
+        eval "$script"
+    else
+        eval "$(command jenv init - --no-rehash "$shell")"
+    fi
+}
+_profile_jenv_init
+unset -f _profile_jenv_init
+
+# init python uv
+source "${HOME}/.local/bin/env"
+
+# init go
+export GOROOT="/usr/local/go"
+export GOPATH="${HOME}/go"
+export GOBIN="${GOPATH}/bin"
+
+# init node
+export NVM_DIR="${HOME}/.config/nvm"
+[ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh" --no-use
+
+# Zsh completion must load after Oh My Zsh has initialized compinit.
+# Register once before the first prompt; Bash can load it immediately.
+case $- in
+    *i*)
+        if [ -n "${ZSH_VERSION-}" ]; then
+            _profile_nvm_completion() {
+                precmd_functions=("${(@)precmd_functions:#_profile_nvm_completion}")
+                [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+                unfunction _profile_nvm_completion
+            }
+            typeset -ga precmd_functions
+            if (( ! ${precmd_functions[(Ie)_profile_nvm_completion]} )); then
+                precmd_functions+=(_profile_nvm_completion)
+            fi
+        elif [ -n "${BASH_VERSION-}" ]; then
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        fi
+        ;;
+esac
+
+# load local secrets (not tracked in dotfiles; see ~/.keychain, chmod 600)
+[ -f ~/.keychain ] && source ~/.keychain
+
+# init jira cli
+export JIRA_AUTH_TYPE="bearer"
+export JIRA_CONFIG_FILE="${XDG_CONFIG_HOME}/.jira/.config.yml"
+
+# init path
+export GO_BIN_PATH="${GOROOT}/bin:${GOBIN}"
+export LLVM_BIN_PATH="/opt/homebrew/opt/llvm/bin"
+# Cache the resolved default Node bin directory for 12 hours. Keep resolving
+# `default` on refresh so newly installed matching versions are picked up.
+export NODE_BIN_PATH="$(
+    cache_file="${XDG_CACHE_HOME}/node-default-bin"
+    now=$(date +%s)
+    mtime=0
+    cached_bin=""
+    if [ -f "$cache_file" ]; then
+        IFS= read -r cached_bin < "$cache_file"
+        mtime=$(stat -f %m "$cache_file" 2>/dev/null) ||
+            mtime=$(stat -c %Y "$cache_file" 2>/dev/null) || mtime=0
+    fi
+    age=$((now - mtime))
+    if [ "$age" -ge 0 ] && [ "$age" -lt 43200 ] &&
+        [ -x "$cached_bin/node" ] &&
+        [ ! "${NVM_DIR}/alias/default" -nt "$cache_file" ]; then
+        printf "%s\n" "$cached_bin"
+    else
+        node_path=$(nvm which default) || exit 1
+        [ -x "$node_path" ] || exit 1
+        node_bin=${node_path%/*}
+        # A read-only cache must not prevent Node from becoming available.
+        if mkdir -p "${XDG_CACHE_HOME}" 2>/dev/null; then
+            tmp_file=$(mktemp "${cache_file}.XXXXXX" 2>/dev/null) || tmp_file=""
+            if [ -n "$tmp_file" ]; then
+                if printf "%s\n" "$node_bin" > "$tmp_file"; then
+                    mv -f "$tmp_file" "$cache_file" 2>/dev/null || rm -f "$tmp_file"
+                else
+                    rm -f "$tmp_file"
+                fi
+            fi
+        fi
+        printf "%s\n" "$node_bin"
+    fi
+)"
+export PYTHON_BIN_PATH="$(dirname "$(uv python find 3.12 --no-config)")"
+export CURL_BIN_PATH="/opt/homebrew/opt/curl/bin"
+export FFMPEG_BIN_PATH="/opt/homebrew/opt/ffmpeg-full/bin"
+export GNU_GREP_BIN_PATH="/opt/homebrew/opt/grep/libexec/gnubin"
+export GNU_SED_BIN_PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin"
+export IMAGEMAGICK_BIN_PATH="/opt/homebrew/opt/imagemagick-full/bin"
+export OPENCODE_BIN_PATH="${HOME}/.opencode/bin"
+export PATH="${GO_BIN_PATH}:${LLVM_BIN_PATH}:${NODE_BIN_PATH}:${PYTHON_BIN_PATH}:${CURL_BIN_PATH}:${FFMPEG_BIN_PATH}:${GNU_GREP_BIN_PATH}:${GNU_SED_BIN_PATH}:${IMAGEMAGICK_BIN_PATH}:${OPENCODE_BIN_PATH}:${PATH}"
+
+# colors
+export LSCOLORS="ExfxbxdxCxaeafhehfhchd"
+# oh-my-zsh's theme-and-appearance.zsh (interactive zsh only) unconditionally
+# re-exports LSCOLORS with its own default after this loads. Stash the value
+# here (not exported, so it doesn't leak into child processes) so
+# ~/.zshrc_custom can restore it once oh-my-zsh has set up its ls alias.
+LSCOLORS_CUSTOM="$LSCOLORS"
+export JQ_COLORS="4;31:0;33:0;33:0;35:0;32:1;37:1;36:1;34"
+export GREP_COLORS='mt=1;44;30'
+
+# rg with color
+alias rg="rg --smart-case --colors \"line:style:bold\" --colors \"line:fg:red\" --colors \"match:bg:blue\" --colors \"match:fg:white\" --colors \"path:style:underline\" --colors \"path:fg:green\""
+
+# yazi
+alias yz="yazi"
